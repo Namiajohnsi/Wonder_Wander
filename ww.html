@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wonder Wander · hidden gems</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Font: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #ffffff;
+            color: #1a2e3b;
+            line-height: 1.5;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 5%;
+            background: white;
+            border-bottom: 1px solid #e2edf2;
+            flex-wrap: wrap;
+            z-index: 20;
+            
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #0b3a47;
+        }
+        .logo i { color: #107a8a; margin-right: 6px; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2b4a58;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .nav-links a:hover { color: #107a8a; }
+        #authButtonContainer button {
+            background: transparent;
+            border: 1.5px solid #0b3a47;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #0b3a47;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        #authButtonContainer button:hover {
+            background: #0b3a47;
+            color: white;
+        }
+
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 30, 40, 0.3);
+            z-index: 2;
+        }
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+            z-index: 10;
+            color: white;
+            max-width: 650px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .hero-content h1 span {
+            display: block;
+            color: #b3eaff;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 2rem;
+            opacity: 0.95;
+        }
+        .search-bar {
+            display: flex;
+            max-width: 550px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            border: none;
+            overflow: hidden;
+        }
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 1rem 1.8rem;
+            font-size: 1rem;
+            outline: none;
+            color: #1e2f3a;
+        }
+        .search-bar button {
+            background: #107a8a;
+            border: none;
+            color: white;
+            padding: 0 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-bar button:hover { background: #0b5f6c; }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.3);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+            z-index: 15;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .carousel-arrow:hover {
+            background: rgba(255,255,255,0.6);
+            color: #0b3a47;
+        }
+        .carousel-prev { left: 25px; }
+        .carousel-next { right: 25px; }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 15;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+            border-color: #107a8a;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            padding: 1.5rem 5%;
+            background: white;
+            border-bottom: 1px solid #e2edf2;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .stat-item {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #107a8a;
+        }
+        .stat-label {
+            font-size: 1rem;
+            color: #3f5f6d;
+        }
+
+        .discover {
+            text-align: center;
+            padding: 3rem 5% 2rem;
+        }
+        .discover h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #0b2e3a;
+        }
+        .discover p {
+            max-width: 700px;
+            margin: 1rem auto 0;
+            color: #3f5f6d;
+        }
+
+        .triple-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            padding: 2rem 5%;
+            background: #f2f7fa;
+            flex-wrap: wrap;
+        }
+        .triple-item {
+            text-align: center;
+        }
+        .triple-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #107a8a;
+        }
+        .triple-label {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #0b2e3a;
+        }
+        .triple-desc {
+            font-size: 0.9rem;
+            color: #3f5f6d;
+            max-width: 210px;
+            margin-top: 0.3rem;
+        }
+
+        .featured {
+            padding: 2rem 5%;
+        }
+        .featured-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .featured-header h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0b2e3a;
+        }
+        .view-all {
+            color: #107a8a;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+        }
+        .view-all:hover { border-bottom-color: #107a8a; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0,50,60,0.03);
+            border: 1px solid #ddeef5;
+            overflow: hidden;
+            transition: 0.2s;
+            cursor: pointer; /* indicate clickable */
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(0,90,100,0.08); }
+        .card-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            pointer-events: none; /* so clicks go to card */
+        }
+        .card-content {
+            padding: 1.2rem 1.2rem 1.5rem;
+            pointer-events: none; /* most content doesn't need separate click, but links inside need override */
+        }
+        /* make links inside card clickable without triggering card modal twice */
+        .card-content a {
+            pointer-events: auto;
+            position: relative;
+            z-index: 5;
+        }
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .card-title span { color: #107a8a; font-weight: 700; }
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 6px 0 4px;
+            color: #f5b342;
+        }
+        .rating span { color: #3f5f6d; margin-left: 4px; font-weight: 400; }
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #3f5f6d;
+            font-size: 0.9rem;
+            margin: 8px 0;
+        }
+        .direction-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #107a8a;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-top: 8px;
+        }
+        .hotel-tag, .restaurant-tag, .spot-tag, .specialty-tag {
+            font-size: 0.75rem;
+            background: #e2f0f5;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 0.7rem;
+            color: #107a8a;
+            font-weight: 600;
+        }
+
+        .local {
+            background: #f2f7fa;
+            padding: 3rem 5%;
+            margin-top: 1rem;
+        }
+        .local h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0b2e3a;
+        }
+        .local p {
+            color: #3f5f6d;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .footer {
+            background: #0b2f3a;
+            color: #d9ecf2;
+            padding: 3rem 5% 1.5rem;
+        }
+        .newsletter {
+            background: #124653;
+            border-radius: 48px;
+            padding: 2rem 3rem;
+            margin-bottom: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .newsletter h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: white;
+        }
+        .newsletter p { color: #b7dae6; margin: 0.3rem 0 0; }
+        .newsletter-form {
+            display: flex;
+            min-width: 320px;
+            background: white;
+            border-radius: 60px;
+            overflow: hidden;
+        }
+        .newsletter-form input {
+            flex: 1;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
+            outline: none;
+        }
+        .newsletter-form button {
+            background: #107a8a;
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .newsletter-form button:hover { background: #0b5f6c; }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer-col p { margin: 1rem 0; color: #b7dae6; }
+        .footer-col i { width: 24px; color: #7fbfcf; }
+        .footer-links {
+            list-style: none;
+        }
+        .footer-links li { margin-bottom: 0.7rem; }
+        .footer-links a {
+            color: #cbe2eb;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .footer-links a:hover { color: white; }
+        .contact-item { display: flex; gap: 10px; margin-bottom: 1rem; align-items: center; }
+
+        .copyright {
+            border-top: 1px solid #2b5563;
+            padding-top: 1.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            color: #96bccb;
+            font-size: 0.9rem;
+        }
+        .copyright a { color: #c0d9e2; text-decoration: none; margin-left: 1.5rem; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal.active { display: flex; }
+        .modal-card {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-card h2 { margin-bottom: 0.5rem; color: #0b2e3a; }
+        .modal-card input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #cde0e8;
+            border-radius: 40px;
+            font-size: 1rem;
+        }
+        .modal-card button {
+            background: #107a8a;
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .modal-card button:last-of-type {
+            background: transparent;
+            color: #107a8a;
+            border: 1.5px solid #107a8a;
+            margin-top: 0.5rem;
+        }
+        .close-modal {
+            float: right;
+            font-size: 1.8rem;
+            font-weight: 300;
+            cursor: pointer;
+            color: #7d98a5;
+        }
+        .toggle-auth-mode {
+            text-align: center;
+            margin-top: 1rem;
+            color: #3f5f6d;
+        }
+        .toggle-auth-mode span {
+            color: #107a8a;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: #107a8a;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 1000;
+            font-weight: 500;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        .map-placeholder {
+            background: #cbdde4;
+            height: 200px;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2b5e6b;
+            font-size: 1.4rem;
+            border: 2px dashed #9cb8c5;
+            cursor: pointer;
+        }
+
+        /* card modal specific */
+        #cardModalImage {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+        #cardModalTags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .modal-tag {
+            background: #e2f0f5;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #107a8a;
+            font-weight: 600;
+        }
+        #cardModalPrice {
+            font-weight: 600;
+            color: #107a8a;
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 800px) {
+            .navbar { flex-direction: column; gap: 0.8rem; }
+            .nav-links { justify-content: center; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-content h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div class="logo"><i class="fas fa-compass"></i> Wonder Wander</div>
+    <div class="nav-links">
+        <a href="#explore">Explore</a>
+        <a href="#hotels">Hotels</a>
+        <a href="#restaurants">Restaurants</a>
+        <a href="#tourist-spots">Tourist Spots</a>
+        <a href="#specialties">Specialties</a>
+        <a href="#near-me">Near Me</a>
+        <div id="authButtonContainer">
+            <button class="signin-btn" id="signInBtn"><i class="fas fa-user-circle"></i> Sign In</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hero Carousel (unchanged) -->
+<div class="hero-carousel" id="explore">
+    <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format');"></div>
+    <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&auto=format');"></div>
+    <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&auto=format');"></div>
+    <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&auto=format');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Your Personal Tour Guide <span>Discover the World's Hidden Gems</span></h1>
+        <p>Find the best hotels, restaurants, and tourist spots near you. Experience local specialties like a true traveler.</p>
+        <div class="search-bar">
+            <input type="text" placeholder="Enter your destination...">
+            <button><i class="fas fa-search"></i> Explore</button>
+        </div>
+    </div>
+    <button class="carousel-arrow carousel-prev" id="carouselPrev">❮</button>
+    <button class="carousel-arrow carousel-next" id="carouselNext">❯</button>
+    <div class="carousel-indicators" id="carouselDots">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+        <span class="dot" data-index="3"></span>
+    </div>
+</div>
+
+<!-- Stats row (unchanged) -->
+<div class="stats-row">
+    <div class="stat-item"><span class="stat-number">10K+</span> <span class="stat-label">Destinations</span></div>
+    <div class="stat-item"><span class="stat-number">50K+</span> <span class="stat-label">Hotels</span></div>
+    <div class="stat-item"><span class="stat-number">100K+</span> <span class="stat-label">Reviews</span></div>
+</div>
+
+<!-- Discover section (unchanged) -->
+<div class="discover">
+    <h2>What Would You Like to Discover?</h2>
+    <p>Whether you're looking for a cozy place to stay, delicious local food, or breathtaking sights — we've got you covered.</p>
+</div>
+
+<!-- Triple stats (unchanged) -->
+<div class="triple-stats">
+    <div class="triple-item">
+        <div class="triple-number">15,000+</div>
+        <div class="triple-label">Hotels</div>
+        <div class="triple-desc">From boutique stays to luxury resorts</div>
+    </div>
+    <div class="triple-item">
+        <div class="triple-number">25,000+</div>
+        <div class="triple-label">Restaurants</div>
+        <div class="triple-desc">Authentic local cuisines and fine dining</div>
+    </div>
+    <div class="triple-item">
+        <div class="triple-number">10,000+</div>
+        <div class="triple-label">Tourist Spots</div>
+        <div class="triple-desc">Landmarks, nature, and hidden wonders</div>
+    </div>
+</div>
+
+<!-- Featured cards (all card sections remain, but cards now clickable) -->
+<div class="featured">
+    <div class="featured-header">
+        <h3>Popular Near You <span style="font-size:1rem; font-weight:400; margin-left:15px; color:#3f5f6d;">Handpicked destinations loved by travelers worldwide</span></h3>
+        <a href="#" class="view-all">View All →</a>
+    </div>
+    <!-- First row (hotels) -->
+    <div class="card-grid" style="margin-bottom:2.5rem;">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">Grand Marina Resort <span>$289/night</span></div>
+                <div class="rating"><i class="fas fa-star"></i> 4.9 <span>(324 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Santorini, Greece</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">La Terrazza <span>$175/night</span></div>
+                <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(512 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Amalfi Coast, Italy</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">Seaside Boutique</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.7 <span>(189 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Dubrovnik, Croatia</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+    </div>
+    <!-- Second row (restaurants & spots) -->
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="restaurant-tag">Restaurant</span>
+                <div class="card-title">Sakura Garden</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(876 reviews)</span></div>
+                <div class="location"><i class="fas fa-clock"></i> 8:00 AM - 5:00 PM · Kyoto, Japan</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="restaurant-tag">Restaurant</span>
+                <div class="card-title">Ocean Pearl</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.9 <span>(234 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Maldives</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="spot-tag">Tourist Spot</span>
+                <div class="card-title">Misty Falls</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.6 <span>(632 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Swiss Alps</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hotels section -->
+<section id="hotels" class="featured" style="background: #f9fbfc; padding-top: 3rem;">
+    <div class="featured-header">
+        <h3>🏨 Top Hotels</h3>
+        <a href="#" class="view-all">View All Hotels →</a>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">The Grand Palace <span>$420/night</span></div>
+                <div class="rating"><i class="fas fa-star"></i> 4.9 <span>(1.2k reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Paris, France</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">Skyline Suites <span>$310/night</span></div>
+                <div class="rating"><i class="fas fa-star"></i> 4.7 <span>(843 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> New York, USA</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&auto=format');"></div>
+            <div class="card-content">
+                <div class="card-title">Azure Resort <span>$275/night</span></div>
+                <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(654 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Maldives</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Restaurants section -->
+<section id="restaurants" class="featured" style="background: white; padding-top: 3rem;">
+    <div class="featured-header">
+        <h3>🍽️ Popular Restaurants</h3>
+        <a href="#" class="view-all">View All Restaurants →</a>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="restaurant-tag">Italian</span>
+                <div class="card-title">Bella Napoli</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(912 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Rome, Italy</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="restaurant-tag">French</span>
+                <div class="card-title">Le Bistro</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.6 <span>(567 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Lyon, France</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="restaurant-tag">Seafood</span>
+                <div class="card-title">Oyster Bar</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.7 <span>(403 reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Tokyo, Japan</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tourist Spots section -->
+<section id="tourist-spots" class="featured" style="background: #f9fbfc; padding-top: 3rem;">
+    <div class="featured-header">
+        <h3>🗺️ Must-See Tourist Spots</h3>
+        <a href="#" class="view-all">View All Spots →</a>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="spot-tag">Heritage</span>
+                <div class="card-title">Taj Mahal</div>
+                <div class="rating"><i class="fas fa-star"></i> 5.0 <span>(3.4k reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Agra, India</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="spot-tag">Modern</span>
+                <div class="card-title">Burj Khalifa</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.9 <span>(2.8k reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Dubai, UAE</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="spot-tag">Nature</span>
+                <div class="card-title">Grand Canyon</div>
+                <div class="rating"><i class="fas fa-star"></i> 4.9 <span>(1.9k reviews)</span></div>
+                <div class="location"><i class="fas fa-map-pin"></i> Arizona, USA</div>
+                <a href="#" class="direction-link"><i class="fas fa-location-arrow"></i> Get Directions</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Specialties section -->
+<section id="specialties" class="featured" style="background: white; padding-top: 3rem;">
+    <div class="featured-header">
+        <h3>🍜 Local Specialties</h3>
+        <a href="#" class="view-all">View All →</a>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="specialty-tag">Street Food</span>
+                <div class="card-title">Pad Thai</div>
+                <p style="color:#3f5f6d; font-size:0.9rem;">Authentic Thai stir-fried noodles</p>
+                <div class="location"><i class="fas fa-map-pin"></i> Bangkok, Thailand</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="specialty-tag">Handicraft</span>
+                <div class="card-title">Murano Glass</div>
+                <p style="color:#3f5f6d; font-size:0.9rem;">Exquisite glass art from Venice</p>
+                <div class="location"><i class="fas fa-map-pin"></i> Venice, Italy</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format');"></div>
+            <div class="card-content">
+                <span class="specialty-tag">Dessert</span>
+                <div class="card-title">Baklava</div>
+                <p style="color:#3f5f6d; font-size:0.9rem;">Sweet pastry from Turkey</p>
+                <div class="location"><i class="fas fa-map-pin"></i> Istanbul, Turkey</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Near Me section -->
+<section id="near-me" class="featured" style="background: #f9fbfc; padding-top: 3rem;">
+    <div class="featured-header">
+        <h3>📍 Near Me</h3>
+        <a href="#" class="view-all">Explore Nearby →</a>
+    </div>
+    <div class="map-placeholder">
+        <i class="fas fa-map" style="font-size:3rem; margin-right:1rem;"></i> Interactive Map (demo)
+    </div>
+    <p style="text-align:center; margin-top:1.5rem; color:#3f5f6d;">Discover hotels, restaurants, and attractions around your current location.</p>
+</section>
+
+<!-- Local Experiences (unchanged) -->
+<div class="local">
+    <h2>Local Experiences</h2>
+    <p>Taste the Local Culture — Immerse yourself in authentic traditions, flavors, and crafts that make each destination unique.</p>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <span style="background:#d4e7ed; padding:0.4rem 1.8rem; border-radius:40px;"><i class="fas-regular fa-bowl-food"></i> Cooking class</span>
+        <span style="background:#d4e7ed; padding:0.4rem 1.8rem; border-radius:40px;"><i class="fas fa-paint-brush"></i> Pottery workshop</span>
+        <span style="background:#d4e7ed; padding:0.4rem 1.8rem; border-radius:40px;"><i class="fas fa-wine-glass"></i> Wine tasting</span>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="newsletter">
+        <div>
+            <h4>Get Travel Inspiration</h4>
+            <p>Subscribe for exclusive deals, hidden gems, and travel tips.</p>
+        </div>
+        <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="Enter your email" required id="newsletterEmail">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <div class="footer-grid">
+        <div class="footer-col">
+            <div class="logo" style="color:white;"><i class="fas fa-compass"></i> Wonder Wander</div>
+            <p>Your personal tour guide to discover amazing hotels, restaurants, and attractions around the world.</p>
+            <div class="contact-item"><i class="fas fa-map"></i> 123 Travel Street, Adventure City</div>
+            <div class="contact-item"><i class="fas fa-phone"></i> +1555123-4567</div>
+            <div class="contact-item"><i class="fas fa-envelope"></i> hello@wonderwander.com</div>
+        </div>
+        <div class="footer-col">
+            <h4>Explore</h4>
+            <ul class="footer-links">
+                <li><a href="#hotels">Hotels</a></li>
+                <li><a href="#restaurants">Restaurants</a></li>
+                <li><a href="#tourist-spots">Attractions</a></li>
+                <li><a href="#specialties">Experiences</a></li>
+                <li><a href="#">Events</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul class="footer-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Press</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Partners</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Support</h4>
+            <ul class="footer-links">
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Safety</a></li>
+                <li><a href="#">Accessibility</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="copyright">
+        <div>© 2026 Wonder Wander. All rights reserved.</div>
+        <div>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookies</a>
+        </div>
+    </div>
+</div>
+
+<!-- Combined Sign In / Sign Up Modal -->
+<div class="modal" id="authModal">
+    <div class="modal-card">
+        <span class="close-modal" id="closeAuthModal">&times;</span>
+        <h2 id="authModalTitle">Sign In</h2>
+        <form id="authForm">
+            <input type="email" placeholder="Email address" required id="authEmail">
+            <input type="password" placeholder="Password" required id="authPassword">
+            <button type="submit" id="authSubmitBtn">Sign In</button>
+            <div class="toggle-auth-mode">
+                <span id="toggleAuthMode">Create new account</span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Card Details Modal -->
+<div class="modal" id="cardModal">
+    <div class="modal-card">
+        <span class="close-modal" id="closeCardModal">&times;</span>
+        <div id="cardModalImage"></div>
+        <h2 id="cardModalTitle">Title</h2>
+        <div id="cardModalRating" class="rating"><i class="fas fa-star"></i> <span></span></div>
+        <div id="cardModalLocation" class="location"><i class="fas fa-map-pin"></i> <span></span></div>
+        <div id="cardModalTags"></div>
+        <p id="cardModalDescription" style="color:#3f5f6d; margin:0.5rem 0;"></p>
+        <div id="cardModalPrice"></div>
+        <a href="#" id="cardModalDirections" class="direction-link" target="_blank"><i class="fas fa-location-arrow"></i> Get Directions</a>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toastMsg">Message</div>
+
+<script>
+(function(){
+
+emailjs.init("cHVgFF-kOACxT3RQG");
+
+/* ===================== CAROUSEL ===================== */
+const slides=document.querySelectorAll(".carousel-slide");
+const dots=document.querySelectorAll(".dot");
+const prev=document.getElementById("carouselPrev");
+const next=document.getElementById("carouselNext");
+let index=0;
+let interval;
+function showSlide(i){
+    slides.forEach((s,n)=> s.classList.toggle("active", n===i));
+    dots.forEach((d,n)=> d.classList.toggle("active", n===i));
+    index=i;
+}
+function nextSlide(){ showSlide((index+1)%slides.length); }
+function prevSlide(){ showSlide((index-1+slides.length)%slides.length); }
+next.addEventListener("click", ()=>{ nextSlide(); reset(); });
+prev.addEventListener("click", ()=>{ prevSlide(); reset(); });
+dots.forEach((dot,i)=> dot.addEventListener("click", ()=>{ showSlide(i); reset(); }));
+function start(){ interval=setInterval(nextSlide,5000); }
+function reset(){ clearInterval(interval); start(); }
+start();
+
+/* ===================== TOAST ===================== */
+const toast=document.getElementById("toastMsg");
+function showToast(text){
+    toast.innerText=text;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 3000);
+}
+
+/* ===================== AUTH SYSTEM (Sign In / Sign Up) ===================== */
+const authModal = document.getElementById('authModal');
+const closeAuthModal = document.getElementById('closeAuthModal');
+const authForm = document.getElementById('authForm');
+const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authModalTitle = document.getElementById('authModalTitle');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const toggleAuthMode = document.getElementById('toggleAuthMode');
+const authContainer = document.getElementById('authButtonContainer');
+
+let isSignUpMode = false;
+let currentUser = localStorage.getItem("ww_user");
+
+// Load existing users from localStorage
+function getUsers() {
+    return JSON.parse(localStorage.getItem('ww_users')) || {};
+}
+
+function saveUsers(users) {
+    localStorage.setItem('ww_users', JSON.stringify(users));
+}
+
+// Update UI based on login state
+function renderAuth() {
+    if (currentUser) {
+        authContainer.innerHTML = `<button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+        document.getElementById("logoutBtn").onclick = () => {
+            localStorage.removeItem("ww_user");
+            currentUser = null;
+            renderAuth();
+            showToast("Logged out successfully");
+        };
+    } else {
+        authContainer.innerHTML = `<button id="signInBtn"><i class="fas fa-user-circle"></i> Sign In</button>`;
+        document.getElementById("signInBtn").onclick = () => {
+            isSignUpMode = false;
+            updateModalMode();
+            authModal.classList.add("active");
+        };
+    }
+}
+
+// Update modal title and button based on mode
+function updateModalMode() {
+    if (isSignUpMode) {
+        authModalTitle.innerText = 'Create Account';
+        authSubmitBtn.innerText = 'Sign Up';
+        toggleAuthMode.innerText = 'Already have an account? Sign In';
+    } else {
+        authModalTitle.innerText = 'Sign In';
+        authSubmitBtn.innerText = 'Sign In';
+        toggleAuthMode.innerText = 'Create new account';
+    }
+}
+
+// Toggle between Sign In and Sign Up modes
+toggleAuthMode.addEventListener('click', () => {
+    isSignUpMode = !isSignUpMode;
+    updateModalMode();
+});
+
+closeAuthModal.onclick = () => authModal.classList.remove('active');
+window.onclick = (e) => { if (e.target === authModal) authModal.classList.remove('active'); };
+
+// Handle form submission
+authForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = authEmail.value.trim();
+    const password = authPassword.value;
+    const users = getUsers();
+
+    if (isSignUpMode) {
+        // SIGN UP - create new account
+        if (users[email]) {
+            showToast('Account already exists. Please sign in.');
+            return;
+        }
+        // Store user
+        users[email] = { password: password }; // In real app, hash password!
+        saveUsers(users);
+        currentUser = email;
+        localStorage.setItem("ww_user", email);
+        
+        // Send welcome email for new account
+        // Replace the emailjs.send() section with this:
+
+emailjs.send("service_4yxz0cp", "template_uru1awe", {
+    to_email: user_email,
+})
+.then(function(response) {
+    console.log("✅ SUCCESS!", response);
+    showToast("Welcome email sent successfully!");
+})
+.catch(function(error) {
+    console.error("❌ FAILED:", error);
+    showToast("Email failed: " + error.text || "Check console");
+});
+        
+    } else {
+        // SIGN IN - existing user
+        if (!users[email] || users[email].password !== password) {
+            showToast('Invalid email or password');
+            return;
+        }
+        currentUser = email;
+        localStorage.setItem("ww_user", email);
+        showToast("Welcome back " + email);
+        // No email sent for sign in
+    }
+    
+    renderAuth();
+    authModal.classList.remove('active');
+    authForm.reset();
+});
+
+// Initialize
+renderAuth();
+
+/* ===================== NEWSLETTER ===================== */
+const newsletterForm=document.getElementById("newsletterForm");
+newsletterForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    const email=document.getElementById("newsletterEmail").value;
+    let list=JSON.parse(localStorage.getItem("newsletter"))||[];
+    list.push(email);
+    localStorage.setItem("newsletter",JSON.stringify(list));
+    emailjs.send("service_4yxz0cp","template_3b0lrzn",{user_email: email})
+        .then(()=> console.log("newsletter email sent"))
+        .catch(err=> console.log(err));
+    newsletterForm.reset();
+    showToast("Subscribed successfully! Check your email.");
+});
+
+/* ===================== SEARCH ===================== */
+const searchBtn=document.querySelector(".search-bar button");
+searchBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    const query=document.querySelector(".search-bar input").value;
+    if(!query){ showToast("Enter destination"); return; }
+    window.open("https://www.google.com/maps/search/"+encodeURIComponent(query), "_blank");
+});
+
+/* ===================== DIRECTIONS ===================== */
+document.querySelectorAll(".direction-link").forEach(link=>{
+    link.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        const location = link.closest('.card-content')?.querySelector('.location')?.innerText || '';
+        window.open("https://www.google.com/maps/search/"+encodeURIComponent(location), "_blank");
+    });
+});
+
+/* ===================== VIEW ALL ===================== */
+document.querySelectorAll(".view-all").forEach(link=>{
+    link.addEventListener("click", function(e){
+        e.preventDefault();
+        const section=link.closest("section") || link.closest(".featured");
+        if(section) section.scrollIntoView({behavior:"smooth"});
+    });
+});
+
+/* ===================== NEAR ME ===================== */
+const map=document.querySelector(".map-placeholder");
+map.addEventListener("click", function(){
+    if(!navigator.geolocation){ showToast("Geolocation not supported"); return; }
+    navigator.geolocation.getCurrentPosition(
+        pos => { window.open(`https://www.google.com/maps/@${pos.coords.latitude},${pos.coords.longitude},15z`,"_blank"); },
+        () => showToast("Location permission denied")
+    );
+});
+
+/* ===================== CARD DETAILS MODAL ===================== */
+const cardModal = document.getElementById('cardModal');
+const closeCardModal = document.getElementById('closeCardModal');
+closeCardModal.onclick = () => cardModal.classList.remove('active');
+window.addEventListener('click', (e) => { if (e.target === cardModal) cardModal.classList.remove('active'); });
+
+document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        if (e.target.closest('a')) return;
+
+        const imgDiv = this.querySelector('.card-img');
+        const bgImage = imgDiv ? imgDiv.style.backgroundImage.slice(5, -2) : '';
+        const titleElem = this.querySelector('.card-title');
+        let title = '', price = '';
+        if (titleElem) {
+            const titleClone = titleElem.cloneNode(true);
+            const priceSpan = titleClone.querySelector('span');
+            if (priceSpan) {
+                price = priceSpan.innerText;
+                priceSpan.remove();
+            }
+            title = titleClone.innerText.trim();
+        }
+        const ratingElem = this.querySelector('.rating');
+        let ratingText = '', reviewCount = '';
+        if (ratingElem) {
+            const text = ratingElem.innerText;
+            const match = text.match(/([0-9.]+)\s*\(([^)]+)\)/);
+            if (match) {
+                ratingText = match[1];
+                reviewCount = match[2];
+            } else {
+                ratingText = text;
+            }
+        }
+        const locationElem = this.querySelector('.location');
+        let locationText = locationElem ? locationElem.innerText.replace(/^\s*[a-zA-Z-]+\s*/, '') : '';
+        const tagElem = this.querySelector('.restaurant-tag, .spot-tag, .specialty-tag, .hotel-tag');
+        const tag = tagElem ? tagElem.innerText : '';
+        const descElem = this.querySelector('p');
+        const description = descElem ? descElem.innerText : '';
+
+        document.getElementById('cardModalImage').style.backgroundImage = `url('${bgImage}')`;
+        document.getElementById('cardModalTitle').innerText = title;
+        const ratingSpan = document.querySelector('#cardModalRating span');
+        if (ratingSpan) ratingSpan.innerText = ratingText + (reviewCount ? ` (${reviewCount})` : '');
+        document.querySelector('#cardModalLocation span').innerText = locationText;
+        
+        const tagsContainer = document.getElementById('cardModalTags');
+        tagsContainer.innerHTML = '';
+        if (tag) {
+            const t = document.createElement('span');
+            t.className = 'modal-tag';
+            t.innerText = tag;
+            tagsContainer.appendChild(t);
+        }
+        document.getElementById('cardModalDescription').innerText = description || 'No additional details available.';
+        const priceDiv = document.getElementById('cardModalPrice');
+        priceDiv.innerHTML = price ? `Price: ${price}` : '';
+
+        const dirLink = document.getElementById('cardModalDirections');
+        dirLink.href = '#';
+        dirLink.onclick = (e) => {
+            e.preventDefault();
+            window.open('https://www.google.com/maps/search/'+encodeURIComponent(locationText), '_blank');
+        };
+
+        cardModal.classList.add('active');
+    });
+});
+
+})();
+</script>
+</body>
+</html>
