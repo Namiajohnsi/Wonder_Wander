@@ -1,0 +1,15 @@
+# robots.txt for Wonder Wander
+# https://wonder-wander-123.vercel.app/
+
+User-agent: *
+Allow: /
+
+# Disallow admin or private pages (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Sitemap location
+Sitemap: https://wonder-wander-123.vercel.app/sitemap.xml
+
+# Crawl delay (optional - be polite to servers)
+Crawl-delay: 10
