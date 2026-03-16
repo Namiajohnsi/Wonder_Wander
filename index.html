@@ -1091,7 +1091,6 @@ const authContainer = document.getElementById('authButtonContainer');
 let isSignUpMode = false;
 let currentUser = localStorage.getItem("ww_user");
 
-// Load existing users from localStorage
 function getUsers() {
     return JSON.parse(localStorage.getItem('ww_users')) || {};
 }
@@ -1100,7 +1099,6 @@ function saveUsers(users) {
     localStorage.setItem('ww_users', JSON.stringify(users));
 }
 
-// Update UI based on login state
 function renderAuth() {
     if (currentUser) {
         authContainer.innerHTML = `<button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
@@ -1112,7 +1110,8 @@ function renderAuth() {
         };
     } else {
         authContainer.innerHTML = `<button id="signInBtn"><i class="fas fa-user-circle"></i> Sign In</button>`;
-        document.getElementById("signInBtn").onclick = () => {
+        const btn = document.getElementById("signInBtn");
+        if(btn) btn.onclick = () => {
             isSignUpMode = false;
             updateModalMode();
             authModal.classList.add("active");
@@ -1120,7 +1119,6 @@ function renderAuth() {
     }
 }
 
-// Update modal title and button based on mode
 function updateModalMode() {
     if (isSignUpMode) {
         authModalTitle.innerText = 'Create Account';
@@ -1133,59 +1131,55 @@ function updateModalMode() {
     }
 }
 
-// Toggle between Sign In and Sign Up modes
 toggleAuthMode.addEventListener('click', () => {
     isSignUpMode = !isSignUpMode;
     updateModalMode();
 });
 
 closeAuthModal.onclick = () => authModal.classList.remove('active');
-window.onclick = (e) => { if (e.target === authModal) authModal.classList.remove('active'); };
 
-// Handle form submission
 authForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    const email = authEmail.value.trim();
-    const password = authPassword.value;
+    const emailValue = authEmail.value.trim();
+    const passwordValue = authPassword.value;
     const users = getUsers();
 
     if (isSignUpMode) {
-        // SIGN UP - create new account
-        if (users[email]) {
+        if (users[emailValue]) {
             showToast('Account already exists. Please sign in.');
             return;
         }
-        // Store user
-        users[email] = { password: password }; // In real app, hash password!
-        saveUsers(users);
-        currentUser = email;
-        localStorage.setItem("ww_user", email);
         
-        // Send welcome email for new account
-        // Replace the emailjs.send() section with this:
+        // Save User
+        users[emailValue] = { password: passwordValue };
+        saveUsers(users);
+        currentUser = emailValue;
+        localStorage.setItem("ww_user", emailValue);
 
-emailjs.send("service_4yxz0cp", "template_uru1awe", {
-    to_email: user_email,
-})
-.then(function(response) {
-    console.log("✅ SUCCESS!", response);
-    showToast("Welcome email sent successfully!");
-})
-.catch(function(error) {
-    console.error("❌ FAILED:", error);
-    showToast("Email failed: " + error.text || "Check console");
-});
+        // --- EMAILJS INTEGRATION ---
+        // Sending the welcome email to the new user
+        emailjs.send("service_4yxz0cp", "template_uru1awe", {
+            to_email: emailValue, // Use the actual email from the input
+            reply_to: "support@wonderwander.com"
+        })
+        .then(function(response) {
+            console.log("✅ Welcome Email Sent!", response.status, response.text);
+            showToast("Account created & Welcome email sent!");
+        })
+        .catch(function(error) {
+            console.error("❌ Email failed:", error);
+            showToast("Account created, but email failed to send.");
+        });
         
     } else {
-        // SIGN IN - existing user
-        if (!users[email] || users[email].password !== password) {
+        // SIGN IN
+        if (!users[emailValue] || users[emailValue].password !== passwordValue) {
             showToast('Invalid email or password');
             return;
         }
-        currentUser = email;
-        localStorage.setItem("ww_user", email);
-        showToast("Welcome back " + email);
-        // No email sent for sign in
+        currentUser = emailValue;
+        localStorage.setItem("ww_user", emailValue);
+        showToast("Welcome back!");
     }
     
     renderAuth();
@@ -1193,7 +1187,6 @@ emailjs.send("service_4yxz0cp", "template_uru1awe", {
     authForm.reset();
 });
 
-// Initialize
 renderAuth();
 
 /* ===================== NEWSLETTER ===================== */
