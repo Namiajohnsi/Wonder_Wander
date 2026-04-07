@@ -343,13 +343,13 @@
             height: 180px;
             background-size: cover;
             background-position: center;
-            pointer-events: none; /* so clicks go to card */
+            pointer-events: none;
         }
         .card-content {
             padding: 1.2rem 1.2rem 1.5rem;
-            pointer-events: none; /* most content doesn't need separate click, but links inside need override */
+            pointer-events: none; 
         }
-        /* make links inside card clickable without triggering card modal twice */
+      
         .card-content a {
             pointer-events: auto;
             position: relative;
